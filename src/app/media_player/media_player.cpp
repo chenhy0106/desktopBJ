@@ -189,6 +189,8 @@ static void media_player_process(AppController *sys,
         setCpuFrequencyMhz(240);
     }
 
+    Serial.println(F("1"));
+
     if (NULL == run_data->pfile)
     {
         Serial.println(F("Not Found File."));
@@ -245,7 +247,9 @@ static void media_player_process(AppController *sys,
     if (run_data->file.available())
     {
         // 播放一帧数据
+        Serial.println(F("frame1"));
         run_data->player_docoder->video_play_screen();
+        Serial.println(F("frame2"));
     }
     else
     {

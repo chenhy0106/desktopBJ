@@ -16,16 +16,11 @@
 #include "sys/app_controller.h"
 
 #include "app/weather/weather.h"
-#include "app/bilibili_fans/bilibili.h"
-#include "app/server/server.h"
-#include "app/idea_anim/idea.h"
-#include "app/settings/settings.h"
-#include "app/game_2048/game_2048.h"
 #include "app/picture/picture.h"
 #include "app/media_player/media_player.h"
-#include "app/screen_share/screen_share.h"
 #include "app/file_manager/file_manager.h"
-#include "app/weather_old/weather_old.h"
+#include "app/biubiubiu/biubiubiu.h"
+#include "app/server/server.h"
 
 #include <SPIFFS.h>
 #include <esp32-hal.h>
@@ -105,16 +100,11 @@ void setup()
     app_controller->init();
     // 将APP"安装"到controller里
     app_controller->app_install(&weather_app);
-    app_controller->app_install(&weather_old_app);
     app_controller->app_install(&picture_app);
     app_controller->app_install(&media_app);
-    app_controller->app_install(&screen_share_app);
     app_controller->app_install(&file_manager_app);
     app_controller->app_install(&server_app);
-    app_controller->app_install(&idea_app);
-    app_controller->app_install(&bilibili_app);
-    app_controller->app_install(&settings_app);
-    app_controller->app_install(&game_2048_app);
+    app_controller->app_install(&biubiubiu_app);
 
     // 优先显示屏幕 加快视觉上的开机时间
     app_controller->main_process(&mpu.action_info);
