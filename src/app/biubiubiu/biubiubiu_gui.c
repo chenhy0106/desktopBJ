@@ -32,7 +32,8 @@ void biubiubiu_gui_init()
     lv_style_set_bg_color(&default_style, LV_STATE_PRESSED, LV_COLOR_GRAY);
     lv_style_set_bg_color(&default_style, LV_STATE_FOCUSED, LV_COLOR_BLACK);
     lv_style_set_bg_color(&default_style, LV_STATE_FOCUSED | LV_STATE_PRESSED, lv_color_hex(0xf88));
-
+    lv_obj_t *act_obj = lv_scr_act(); // 获取当前活动页
+    lv_obj_clean(act_obj);
 }
 
 void display_biubiubiu_init()

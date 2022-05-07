@@ -181,9 +181,12 @@ int AppController::send_to(const char *from, const char *to,
         // 发给控制器的消息(目前都是wifi事件)
         EVENT_OBJ new_event = {fromApp, type, message, 3, 0, 0};
         eventList.push_back(new_event);
-        Serial.print("[EVENT]\tAdd -> " + String(app_event_type_info[type]));
-        Serial.print(F("\tEventList Size: "));
-        Serial.println(eventList.size());
+        if (type != APP_MESSAGE_WIFI_ALIVE) {
+            Serial.print("[EVENT]\tAdd -> " + String(app_event_type_info[type]));
+            Serial.print(F("\tEventList Size: "));
+            Serial.println(eventList.size());
+        }
+        
     }
     else
     {
@@ -244,10 +247,14 @@ int AppController::req_event_deal(void)
             (*((*event).from->message_handle))(CTRL_NAME, (*event).from->app_name,
                                                (*event).type, (*event).info, NULL);
         }
-        Serial.print("[EVENT]\tDelete -> " + String(app_event_type_info[(*event).type]));
+
+        if (event->type != APP_MESSAGE_WIFI_ALIVE) {
+            Serial.print("[EVENT]\tDelete -> " + String(app_event_type_info[(*event).type]));
+            Serial.print(F("\tEventList Size: "));
+            Serial.println(eventList.size() - 1);
+        }
+        
         event = eventList.erase(event); // 删除该响应完成的事件
-        Serial.print(F("\tEventList Size: "));
-        Serial.println(eventList.size());
     }
     return 0;
 }
