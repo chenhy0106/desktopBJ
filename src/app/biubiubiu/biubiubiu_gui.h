@@ -1,8 +1,14 @@
 #ifndef APP_BIUBIUBIU_GUI_H
 #define APP_BIUBIUBIU_GUI_H
 
-
-#define PIC_FILENAME_MAX_LEN 100
+struct TimeStr
+{
+    int year;
+    int month;
+    int day;
+    int hour;
+    int minute;
+};
 
 #ifdef __cplusplus
 extern "C"
@@ -17,6 +23,8 @@ extern "C"
     void biubiubiu_gui_init(void);
     void display_biubiubiu_init(void);
     void display_biubiubiu();
+    void display_state(int text_id);
+    void display_biubiubiu_time(struct TimeStr timeInfo);
     void biubiubiu_gui_del(void);
 
 #ifdef __cplusplus
