@@ -1,6 +1,7 @@
 # desktopBJ
 
-桌面摆件
+一个桌面摆件
+
 Hardware & Ideas forked from https://github.com/peng-zhihui/HoloCubic
 
 Firmware forked from https://gitee.com/ClimbSnailQ/HoloCubic_AIO 包含天气，web server，相册和ftp服务器等应用。
