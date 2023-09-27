@@ -3,7 +3,9 @@
 
 #include "sys/interface.h"
 
-#define BIUBIUBIU_PATH "/biu/gif"
 extern APP_OBJ biubiubiu_app;
+
+#define DEBUG 1
+#define DPRINTF(fmt, ...) if (DEBUG) Serial.println(fmt, ##__VA_ARGS__)
 
 #endif

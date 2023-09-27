@@ -26,20 +26,10 @@ struct BIU_Config
 
 static void write_config(BIU_Config *cfg)
 {
-    // g_flashCfg.writeFile(BIUBIUBIU_CONFIG_PATH, w_data.c_str());
 }
 
 static void read_config(BIU_Config *cfg)
 {
-    // char info[128] = {0};
-    // uint16_t size = g_flashCfg.readFile(BIUBIUBIU_CONFIG_PATH, (uint8_t *)info);
-    // info[size] = 0;
-    // if (size == 0) {
-        
-    //     write_config(cfg);
-    // } else {
-    // }
-
     cfg->display_times = 6;
     cfg->wifi_alive_interval = 10000;
     cfg->timestamp_interval = 120000;
@@ -83,26 +73,24 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     {
         // 建立连接成功
         case MQTT_EVENT_CONNECTED:
-            Serial.println("Connect server ok. \n");
+            DPRINTF("Connect server ok. \n");
             // 订阅主题
             esp_mqtt_client_subscribe(client, MQTT_RECVLOVE_TOPIC, 0);         
             run_data->connected_server_flag = true;  
             break;
         // 客户端断开连接
         case MQTT_EVENT_DISCONNECTED:
-            Serial.println("Server disconnected. \n");
+            DPRINTF("Server disconnected. \n");
             esp_mqtt_client_reconnect(client);
             run_data->connected_server_flag = false;
             break;
         // 已收到订阅的主题消息
         case MQTT_EVENT_DATA:
-            // Serial.printf("mqtt received topic: %.*s \n",event->topic_len, event->topic);
-            // Serial.printf("topic data: %.*s\r\n", event->data_len, event->data);
             run_data->display_times = cfg_data.display_times * 8;
             break;
         // 客户端遇到错误
         case MQTT_EVENT_ERROR:
-            Serial.println("MQTT_EVENT_ERROR \n");
+            DPRINTF("MQTT_EVENT_ERROR \n");
             break;
         default:
             Serial.printf("Other event id:%d \n", event->event_id);
@@ -129,13 +117,13 @@ static void close_server(AppController *sys) {
 }
 
 static void send_love() {
-    Serial.println("[Function] send_love");
+    DPRINTF("[Function] send_love");
     esp_mqtt_client_publish(run_data->client, MQTT_SENDLOVE_TOPIC, NULL, 0, 0, 1);
     return;
 }
 
 static void update_time() {
-    Serial.println("[Function] update_time");
+    DPRINTF("[Function] update_time");
 
     if (WL_CONNECTED != WiFi.status())
         return;
@@ -151,7 +139,7 @@ static void update_time() {
         if (httpCode == HTTP_CODE_OK)
         {
             String payload = http.getString();
-            Serial.println(payload);
+            DPRINTF(payload);
             int time_index = (payload.indexOf("data")) + 12;
             time = payload.substring(time_index, payload.length() - 3);
             run_data->preNetTimestamp = atoll(time.c_str()) + 2 + TIMEZERO_OFFSIZE;
@@ -170,7 +158,7 @@ static void update_time() {
 }
 
 static void show_time() {
-    // Serial.println("[Function] show_time");
+    DPRINTF("[Function] show_time");
 
     run_data->preNetTimestamp = run_data->preNetTimestamp + (millis() - run_data->preLocalTimestamp);
     run_data->preLocalTimestamp = millis();
@@ -182,12 +170,11 @@ static void show_time() {
     t.day = run_data->g_rtc.getDay();
     t.hour = run_data->g_rtc.getHour(true);
     t.minute = run_data->g_rtc.getMinute();
-    // Serial.printf("time : %d-%d\n",t.hour, t.minute);
+    
     display_biubiubiu_time(t);
     
     return;
 }
-
 
 static int biubiubiu_init(void) {
     biubiubiu_gui_init();
@@ -250,8 +237,6 @@ static void biubiubiu_process(AppController *sys,
         sys->send_to(BIUBIUBIU_APP_NAME, CTRL_NAME, APP_MESSAGE_WIFI_ALIVE, 0, NULL);
     }
 
-    // Serial.println(run_data->time_timestamp);
-
     if (doDelayMillisTime(cfg_data.timestamp_interval, &run_data->time_timestamp, false) || run_data->time_timestamp == 0) {
         update_time();
         run_data->time_timestamp = millis();
@@ -277,7 +262,6 @@ static int biubiubiu_exit_callback(void *param)
 {
     biubiubiu_gui_del();
 
-
     free(run_data);
     run_data = NULL;
     return 0;
@@ -292,7 +276,7 @@ static void biubiubiu_message_handle(const char *from, const char *to,
         int event_id = (int)message;
         switch (event_id) {
             case WIFI_HANDLE:
-                Serial.println("waitwifi callback");
+                DPRINTF("waitwifi callback");
                 run_data->wait_wifi_flag = false;
                 break;
         }

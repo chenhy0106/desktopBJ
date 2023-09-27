@@ -9,18 +9,12 @@
   Last review/edit by ClimbSnail: 2021/08/21
  ****************************************************/
 
-#include "driver/lv_port_indev.h"
-#include "driver/lv_port_fatfs.h"
 #include "common.h"
 
 #include "sys/app_controller.h"
 
 #include "app/weather/weather.h"
-#include "app/picture/picture.h"
-#include "app/media_player/media_player.h"
-#include "app/file_manager/file_manager.h"
 #include "app/biubiubiu/biubiubiu.h"
-#include "app/server/server.h"
 
 #include <SPIFFS.h>
 #include <esp32-hal.h>
@@ -28,20 +22,6 @@
 /*** Component objects **7*/
 ImuAction *act_info;           // 存放mpu6050返回的数据
 AppController *app_controller; // APP控制器
-
-TaskHandle_t handleTaskLvgl;
-void TaskLvglUpdate(void *parameter)
-{
-    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-
-    for (;;)
-    {
-        screen.routine();
-        // lv_task_handler();
-
-        delay(5);
-    }
-}
 
 void setup()
 {
@@ -51,10 +31,6 @@ void setup()
     // MAC ID可用作芯片唯一标识
     Serial.print(F("ChipID(EfuseMac): "));
     Serial.println(ESP.getEfuseMac());
-    // flash运行模式
-    // Serial.print(F("FlashChipMode: "));
-    // Serial.println(ESP.getFlashChipMode());
-    // Serial.println(F("FlashChipMode value: FM_QIO = 0, FM_QOUT = 1, FM_DIO = 2, FM_DOUT = 3, FM_FAST_READ = 4, FM_SLOW_READ = 5, FM_UNKNOWN = 255"));
 
     app_controller = new AppController(); // APP控制器
 
@@ -90,27 +66,15 @@ void setup()
     rgb.init();
     rgb.setBrightness(0.05).setRGB(0, 64, 64);
 
-    /*** Init ambient-light sensor ***/
-    ambLight.init(ONE_TIME_H_RESOLUTION_MODE);
-
-    /*** Init micro SD-Card ***/
-    tf.init();
-    lv_fs_if_init();
-
     app_controller->init();
     // 将APP"安装"到controller里
     app_controller->app_install(&weather_app);
-    app_controller->app_install(&picture_app);
-    app_controller->app_install(&media_app);
-    app_controller->app_install(&file_manager_app);
-    app_controller->app_install(&server_app);
     app_controller->app_install(&biubiubiu_app);
 
     // 优先显示屏幕 加快视觉上的开机时间
     app_controller->main_process(&mpu.action_info);
 
     /*** Init IMU as input device ***/
-    lv_port_indev_init();
     mpu.init(app_controller->sys_cfg.mpu_order,
              app_controller->sys_cfg.auto_calibration_mpu,
              &app_controller->mpu_cfg); // 初始化比较耗时
@@ -126,15 +90,6 @@ void setup()
                             rgb_cfg->brightness_step, rgb_cfg->time};
     // 初始化RGB任务
     rgb_thread_init(&rgb_setting);
-
-    // Update display in parallel thread.
-    // xTaskCreate(
-    //     TaskLvglUpdate,
-    //     "LvglThread",
-    //     20000,
-    //     nullptr,
-    //     configMAX_PRIORITIES - 1,
-    //     &handleTaskLvgl);
 }
 
 void loop()
@@ -156,6 +111,4 @@ void loop()
     }
 #endif
     app_controller->main_process(act_info); // 运行当前进程
-    // Serial.println(ambLight.getLux() / 50.0);
-    // rgb.setBrightness(ambLight.getLux() / 500.0);
 }

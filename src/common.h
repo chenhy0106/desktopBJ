@@ -6,9 +6,7 @@
 #include "Arduino.h"
 #include "driver/rgb_led.h"
 #include "driver/flash_fs.h"
-#include "driver/sd_card.h"
 #include "driver/display.h"
-#include "driver/ambient.h"
 #include "driver/imu.h"
 #include "network.h"
 
@@ -17,13 +15,11 @@
 #define IMU_I2C_SCL 33
 
 extern IMU mpu; // 原则上只提供给主程序调用
-extern SdCard tf;
 extern Pixel rgb;
 // extern Config g_cfg;       // 全局配置文件
 extern Network g_network;  // 网络连接
 extern FlashFS g_flashCfg; // flash中的文件系统（替代原先的Preferences）
 extern Display screen;     // 屏幕对象
-extern Ambient ambLight;   // 光纤传感器对象
 
 boolean doDelayMillisTime(unsigned long interval,
                           unsigned long *previousMillis,

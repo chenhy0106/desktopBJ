@@ -79,43 +79,4 @@ public:
     uint32_t encode(uint8_t *msg);
 };
 
-class FileSystem
-{
-public:
-    MsgHead m_msg_head;
-
-public:
-    FileSystem(ACTION_TYPE action_type = AT_FREE_STATUS);
-    ~FileSystem(){};
-    uint32_t decode(const uint8_t *msg);
-    uint32_t encode(uint8_t *msg);
-};
-
-class DirCreate
-{
-public:
-    FileSystem m_file_system;
-    char m_dir_path[99];
-
-public:
-    DirCreate(const char *dir_name = NULL);
-    ~DirCreate(){};
-    uint32_t decode(const uint8_t *msg);
-    uint32_t encode(uint8_t *msg);
-};
-
-class DirList
-{
-public:
-    FileSystem m_file_system;
-    char m_dir_path[99];
-    char m_dir_info[400];   // 用来承载子文件的文件名 多个文件名之间使用\t分隔
-
-public:
-    DirList(const char *dir_path = NULL, const char *dir_info = NULL);
-    ~DirList(){};
-    uint32_t decode(const uint8_t *msg);
-    uint32_t encode(uint8_t *msg);
-};
-
 #endif
