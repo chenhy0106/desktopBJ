@@ -113,7 +113,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 static void server_init() {
     esp_mqtt_client_config_t mqtt_cfg;
     memset(&mqtt_cfg, 0, sizeof(esp_mqtt_client_config_t));
-    mqtt_cfg.host = "47.111.117.220";
+    mqtt_cfg.host = "broker-cn.emqx.io";
     mqtt_cfg.port = 1883;
 
     run_data->client = esp_mqtt_client_init(&mqtt_cfg);
